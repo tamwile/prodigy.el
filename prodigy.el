@@ -104,6 +104,12 @@ An example is restarting a service."
           (const :tag "Kill buffer unless it is visible" unless-visible)
           (const :tag "Never kill buffer" nil)))
 
+(defcustom prodigy-root-command "sudo"
+  "The command to use when a process need root privileges."
+  :type 'string
+  :group 'prodigy
+  :options '("sudo" "doas"))
+
 (defcustom prodigy-timer-interval 1
   "How often to check for process changes, in seconds."
   :group 'prodigy
@@ -1058,7 +1064,7 @@ NAME, BUFFER, PROGRAM, and PROGRAM-ARGS are as in `start-process.'"
          (pwd (read-passwd (concat "Sudo password for `" (mapconcat #'identity sudo-args " ") "': ")))
          (process
          (start-process-shell-command
-          name buffer (concat "sudo " (mapconcat #'shell-quote-argument sudo-args " ")))))
+          name buffer (concat prodigy-root-command " " (mapconcat #'shell-quote-argument sudo-args " ")))))
     (process-send-string process pwd)
     (clear-string pwd)
     (process-send-string process "\r")
